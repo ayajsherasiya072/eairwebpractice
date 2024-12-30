@@ -1,11 +1,31 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Link, useNavigate } from 'react-router-dom'
 function Register() {
   const [data,setData]=useState({
     email:"",
     password:""
   })
+  const navigate=useNavigate();
+  const handleSubmit=(e)=>{
+    e.preventDefault()
+    fetch("http://localhost:3000/api/user/register",
+      {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+      }
+    )
+    .then(res=>res.json())
+    .then(res=>{
+      if(res.success===true)
+      {
+        navigate("/home")
+      }
+      else{
+        alert(res.message)
+      }
+  })
+  }
   return (
     <>
     <div className="d-flex justify-content-center align-items-center vh-100">
@@ -43,12 +63,12 @@ function Register() {
           </div>
           <div className="row mb-4">
             <div className="col-12">
-              <button className="btn btn-primary w-100">SignUp</button>
+              <button className="btn btn-primary w-100" onClick={handleSubmit}>SignUp</button>
             </div>
           </div>
-          <div className="row mb-4">
+          <div className="row">
             <div className="col-12">
-              <p className="text-center">Already have an account?<Link to="/login">LogIn</Link>
+              <p className="text-center">Already have an account?<Link to="/">LogIn</Link>
               </p>
             </div>
           </div>
@@ -57,5 +77,4 @@ function Register() {
     </>
   )
 }
-
 export default Register
